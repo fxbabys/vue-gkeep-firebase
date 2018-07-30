@@ -1,6 +1,5 @@
 <template>
     <div v-if="note" transition="modal" class="backdrop" @click="dismissModal">
-				// eslint-disable-next-line
         <form class="edit-note" @submit.prevent="update" @click.stop="">
             <input type="text" name="title" v-model="note.title" placeholder="Title" />
             <textarea name="content" v-model="note.content" placeholder="Text goes here…" rows="8"></textarea>
@@ -13,7 +12,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import noteRepository from '../../data/NoteRepository'
+// import noteRepository from '../../data/NoteRepository'
 export default {
 	name: 'UpdateModal',
 	props: ['note'],
@@ -23,22 +22,17 @@ export default {
 		}
 	},
 	methods: {
-		remove () {
-			noteRepository.remove(this.note, err => {
-				if (err) return this.$eventHub.$emit('alert', { type: 'error', message: 'Failed to remove note' })
-				this.dismissModal()
-			})
-		},
-		update () {
-			noteRepository.update(this.note, err => {
-				if (err) return this.$eventHub.$emit('alert', { type: 'error', message: 'Failed to update note' })
-				this.dismissModal()
-				this.$eventHub.$emit('alert', { type: 'success', message: 'Note was successfully updated' })
-			})
-		},
-		dismissModal () {
-			this.note = null
-		}
+    remove () {
+      this.$store.dispatch('deleteNote', this.note)
+      this.dismissModal()
+    },
+    update () {
+      this.$store.dispatch('updateNote', this.note)
+      this.dismissModal()
+    },
+    dismissModal () {
+      this.$store.commit('UNSELECT_NOTE')
+    }
 	},
   data () {
     return {

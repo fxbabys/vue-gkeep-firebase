@@ -14,17 +14,12 @@ import UpdateModal from '@/components/notes/UpdateModal'
 export default {
   data() {
     return {
-			selectedNote: null
     }
 	},
-	created () {
-    this.$eventHub.$on('note.selected', (note) => {
-      console.log(note)
-      this.selectedNote = note
-    })
-	},
-	beforeDestory () {
-		this.$eventHub.$off('note.selected')
+	computed: {
+		selectedNote () {
+			return this.$store.getters.getSelectedNote
+		}
 	},
   components: {
 		Notes,

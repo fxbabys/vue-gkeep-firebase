@@ -11,7 +11,7 @@
 		</div>
 		<div v-show="wantsToSignUp">
 			<label for="confirm-password">Confirm Password</label>
-			<input type="password" name="confirm-password" id="confirm-password" v-model="confirmPassword">
+			<input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password" v-model="confirmPassword">
 		</div>
 		<div v-show="!wantsToSignUp" class="clearfix btn-group">
 			<button type="submit">Sign in</button>
@@ -31,7 +31,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-import Auth from '@/data/Auth'
 
 export default {
   data() {
@@ -42,93 +41,102 @@ export default {
 			wantsToSignUp: false
     }
 	},
+	computed: {
+		credential () {
+			return { email: this.email, password: this.password }
+		},
+		authorized () {
+			return this.$store.getters.getAuth
+		}
+	},
+	watch: {
+		'authorized': {
+			handler () {
+				if (this.authorized) this.$router.push('Notes')
+			}
+		}
+	},
 	methods: {
 		signUpWithPassword () {
-			// if (this.password === this.confirmPassword) {
-			// 	Auth.signUpWithPassword({
-			// 		email: this.email,
-			// 		password: this.password
-			// 	})
-			// 	.then(userData => this.signInWithPassword())
-			// 	.then(() => this.$eventHub.$emit('alert', { type: 'success', message: 'Signed up successfully' }))
-			// 	.catch(error => this.$eventHub.$emit('alert', { type: 'error', message: error.message }))
-			// }
 			if (this.password === this.confirmPassword) {
-				this.$store.dispatch('signUpWithPassword', { email: this.email, password: this.password })
+				this.$store.dispatch('signUpWithPassword', this.credential)
 			}
 		},
 		signInWithPassword () {
-			return Auth.signInWithPassword({
-				email: this.email,
-				password: this.password
-			})
-			.then(userData => {
-				this.$eventHub.$emit('alert', { type: 'success', message: 'Signed in successfully' })
-				this.onSignedIn()
-				return userData
-			})
-			.catch(error => this.$eventHub.$emit('alert', { type: 'error', message: error.message }))
+			if (this.email.length > 0 && this.password.length > 0) {
+				this.$store.dispatch('signInWithPassword', this.credential)
+			}
 		},
-		signInWithProvider (provider) {
-			Auth.signInWithProvider(provider, (error, authData) => {
-				if (error) this.$eventHub.$emit('alert', { type: 'error', message: error.message })
-				this.onSignedIn()
-			})
-		},
-		onSignedIn () {
-			this.$router.go({ name: 'notes' })
+		signInWithProvider (socialNetWork) {
+			this.$store.dispatch('signInWithProvider', socialNetWork)
 		}
 	},
-  components: {
+  	components: {
 
-  }
+  	}
 }
 </script>
 
-<style scoped lang="stylus">
-.auth-form
-	width 30rem
-	max-width 100%
-	margin 25vh auto .9375rem
-	background #fff
-	padding .9375rem
-	border-radius .125rem
-	box-shadow 0 1px 5px #ccc
-	h1
-		font-weight 300
-	div
-		margin-top .9375rem
-	input
-		height 2rem
-		border none
-		border-bottom 2px solid #bbb
-		&:focus
-			border-bottom-color: #555
-	label, input
-		display block
-		width 100%
-	button
-		font-size 1.125rem
-		background #fff
-		border 1px solid #41b883
-		padding 4px 6px
-		margin 0
-		border-radius .1875rem
-	.btn-group button
-		border-raidus .1875rem 0 0 .1875rem
-		width 50%
-		float left
-		& + button
-			border-radius 0 .1875rem .1875rem 0
-			border-left none
-	.signup-submit
-		width 100%
-	hr
-		margin-top 1.25rem
-	.social-providers
-		text-align center
-		a
-			color #41b883
-			font-size 2.25rem
-			padding .25rem
+<style scoped>
+.auth-form{
+   width: 480px;
+   max-width: 100%;
+   margin: 25vh auto 15px;
+   background: #fff;
+   padding: 15px;
+   border-radius: 2px;
+   box-shadow: 0 1px 5px #ccc;
+ }
+ .auth-form h1{
+	 text-align: center;
+   font-weight: 300;
+ }
+ .auth-form > div {
+   margin-top: 15px;
+ }
+ .auth-form input {
+   height: 32px;
+	 border: none;
+	 outline: 0;
+   border-bottom: 2px solid #bbb;
+ }
+ .auth-form input:focus{
+   border-bottom-color: #555;
+ }
+ .auth-form label, .auth-form input{
+   display: block;
+   width: 100%;
+ }
+ .auth-form button {
+   font-size: 18px;
+   background: #fff;
+   border: 1px solid #41b883;
+   padding: 4px 6px;
+	 margin: 0;
+	 outline: 0;
+   border-radius: 3px;
+ }
+ .auth-form .btn-group button{
+   border-radius: 3px 0 0 3px;
+   width: 50%;
+   float: left;
+ }
+ .auth-form .btn-group button + button{
+   border-radius: 0 3px 3px 0;
+   border-left: none;
+ }
+ .auth-form .signup-submit{
+   width: 100%;
+ }
+ .auth-form hr{
+   margin-top: 20px;
+ }
+ .auth-form .social-providers{
+   text-align: center;
+ }
+ .auth-form .social-providers a{
+   color: #41b883;
+   font-size: 36px;
+   padding: 4px;
+ }
 </style>

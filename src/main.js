@@ -10,6 +10,16 @@ Vue.config.productionTip = false
 const eventHub = new Vue()
 Vue.prototype.$eventHub = eventHub
 
+router.beforeEach((to, from, next) => {
+  if (to.meta.authRequired && !store.getters.getAuth) {
+    next({
+      path: '/auth'
+    })
+  } else {
+    next()
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

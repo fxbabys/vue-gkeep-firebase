@@ -5,7 +5,7 @@ import config from './config'
 import * as getters from './getters'
 import * as actions from './actions'
 import * as types from './mutation-types'
-// import notes from './modules/notes'
+import notes from './modules/notes'
 import users from './modules/users'
 
 Vue.use(Vuex)
@@ -24,7 +24,7 @@ export default new Vuex.Store({
     notesPath: ''
   },
   modules: {
-    // notes,
+    notes,
     users
   },
   mutations: {
@@ -33,6 +33,9 @@ export default new Vuex.Store({
     },
     [types.EXPIRE_ALERT] (state) {
       state.alerts.pop()
+    },
+    [types.SET_NOTES_PATH] (state, path) {
+      state.notesPath = path
     }
   }
 })

@@ -32,10 +32,10 @@ export default {
 	div
 		background-color #bbb
 		overflow hidden
-		.error
+		&.error
 			background-color #e03c3c
 			color #fff
-		.success
+		&.success
 			background-color #41b883
 			color #fff
 	p

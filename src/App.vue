@@ -1,39 +1,29 @@
 <template>
   <div id="app">
-    <alerts :alerts="alerts"></alerts>
+    <HeaderBar></HeaderBar>
+    <alerts :alerts="activatedAlerts"></alerts>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import Alerts from './components/Alerts'
+import HeaderBar from './components/HeaderBar'
 
 export default {
   name: 'App',
   data () {
     return {
-			selectedNote: null,
-      alerts: []
     }
   },
-  created () {
-    this.$eventHub.$on('alert', (alert) => {
-      this.alerts.push(alert)
-      setTimeout(() => {
-        this.alerts.splice(this.alerts.indexOf(alert), 1)
-      }, alert.duration || 1500);
-    })
-    this.$eventHub.$on('note.selected', (note) => {
-      console.log(note)
-      this.selectedNote = note
-    })
+  computed: {
+    activatedAlerts () {
+      return this.$store.getters.getActivatedAlerts
+    }
   },
-	beforeDestroy () {
-		this.$eventHub.$off('note.selected')
-    this.$eventHub.$off('alert')
-	},
   components: {
-    Alerts
+    Alerts,
+    HeaderBar
   }
 }
 </script>

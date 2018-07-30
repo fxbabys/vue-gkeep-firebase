@@ -8,7 +8,10 @@ export default new Router({
   routes: [{
     path: '/notes',
     name: 'Index',
-    component: () => import(`@/views/Notes`)
+    component: () => import(`@/views/Notes`),
+    meta: {
+      authRequired: true
+    }
   }, {
     path: '/auth',
     name: 'Auth',

@@ -2,7 +2,7 @@
   <div class="note">
       <h1>{{ note.title }}</h1>
       <pre>{{ note.content }}</pre>
-			<button type="button" v-on:click.stop="remove">
+			<button type="button" v-on:click.stop="remove(note)">
 				<i class="fa fa-trash-o" aria-hidden="true"></i>
 			</button>
 			<button type="button" class="edit" v-on:click.stop="selectNote(note)">
@@ -12,7 +12,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-import noteRepository from '../../data/NoteRepository'
+// import noteRepository from '../../data/NoteRepository'
 
 export default {
 	props: ['note'],
@@ -21,16 +21,13 @@ export default {
     }
 	},
 	methods: {
-		remove () {
-			noteRepository.remove(this.note, err => {
-				if (err) return this.$eventHub.$emit('alert', { type: 'error', message: 'Failed to remove note' })
-			})
+		remove (note) {
+			console.log(note)
+			this.$store.dispatch('deleteNote', note)
 		},
-    selectNote ({key, title, content}) {
-      console.log(this)
-			// this.$dispatch('note.selected', {key, title, content})   // inform the parent component
-			this.$eventHub.$emit('note.selected', {key, title, content})
-    }
+		selectNote (note) {
+			this.$store.commit('SELECT_NOTE', note)
+		}
 	},
   components: {
 
